@@ -1,0 +1,567 @@
+
+
+1️⃣ What You Are Building (Clear Goal)
+
+You will build a full e-commerce system where:
+
+Frontend → Angular
+
+Backend → Java Spring Boot microservices
+
+Communication → REST + Kafka (event-driven)
+
+Infrastructure → Docker
+
+Security → JWT
+
+Each service → independent & scalable
+
+
+
+
+
+
+3️⃣ Business Features (What Your App Does)
+
+| Feature      | Description             |
+| ------------ | ----------------------- |
+| User         | Signup, login, JWT auth |
+| Product      | Product catalog         |
+| Cart         | Add/remove items        |
+| Order        | Place order             |
+| Payment      | Dummy payment           |
+| Inventory    | Stock management        |
+| Notification | Email / logs            |
+
+
+
+4️⃣ Microservices You Will Create
+Each service is independent and has its own database.
+
+| Microservice         | Responsibility    | DB    |
+| -------------------- | ----------------- | ----- |
+| User Service         | Auth, users       | MySQL |
+| Product Service      | Products, stock   | MySQL |
+| Cart Service         | Cart logic        | MySQL |
+| Order Service        | Orders            | MySQL |
+| Payment Service      | Payment handling  | MySQL |
+| Notification Service | Email / logs      | No DB |
+| API Gateway          | Entry point       | —     |
+| Discovery Server     | Service discovery | —     |
+| Config Server        | Central config    | —     |
+
+
+
+5️⃣ Complete Backend Tech Stack (Java)
+Core Stack
+
+| Purpose   | Technology            |
+| --------- | --------------------- |
+| Language  | Java 17               |
+| Framework | Spring Boot           |
+| Build     | Maven                 |
+| ORM       | Spring Data JPA       |
+| DB        | MySQL                 |
+| Security  | Spring Security + JWT |
+
+
+
+
+Spring Cloud (Microservices Backbone)
+
+| Problem           | Technology                |
+| ----------------- | ------------------------- |
+| Service Discovery | Eureka Server             |
+| Central Config    | Spring Cloud Config       |
+| API Gateway       | Spring Cloud Gateway      |
+| Sync Calls        | OpenFeign                 |
+| Load Balancing    | Spring Cloud LoadBalancer |
+| Fault Tolerance   | Resilience4j              |
+| Tracing           | Sleuth                    |
+| Logging           | Logback                   |
+
+
+
+
+Kafka Technologies
+
+| Purpose        | Tool           |
+| -------------- | -------------- |
+| Message Broker | Apache Kafka   |
+| Java Client    | Spring Kafka   |
+| Serialization  | JSON           |
+| Coordination   | Zookeeper      |
+| Local Setup    | Docker Compose |
+
+
+
+7️⃣ When to Use REST vs Kafka (Very Important)
+REST (Synchronous)
+
+Login
+
+Product search
+
+Get cart
+
+Validate user
+
+Kafka (Asynchronous Events)
+
+Order placed
+
+Payment completed
+
+Inventory updated
+
+Send notification
+
+📌 Golden rule (interview-ready):
+
+REST for queries, Kafka for business events.
+
+
+
+
+
+
+
+
+
+user-service.properties
+
+
+<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.2</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+<properties>
+		<java.version>17</java.version>
+		<spring-cloud.version>2023.0.1</spring-cloud.version>
+	</properties>
+
+
+
+STEP B3 — KAFKA CONFIG (User Servic
+
+
+
+
+
+docker exec -it notification-group /bin/bash
+
+
+
+
+👉 “Kafka consumer is finally working”
+👉 “Add retry & dead-letter topic (DLQ)”
+👉 “Create Product Service consuming same event”
+👉 “Add JWT authentication at API Gateway”
+
+
+🥈 SECOND BEST OPTION
+👉 Add Retry + Dead Letter Topic (DLQ) to Kafka Consumer
+
+This is advanced Kafka and very impressive, but:
+
+Best after you have 2–3 services
+
+More infra-heavy
+
+
+🥉 LATER STEPS (NOT YET)
+
+| Step               | Why later                      |
+| ------------------ | ------------------------------ |
+| JWT Authentication | Touches Gateway + User Service |
+| Angular Frontend   | Depends on stable APIs         |
+| Order Service      | Depends on Product + User      |
+| Payments           | Last                           |
+
+
+✅ RECOMMENDED ROADMAP (SAVE THIS)
+
+1️⃣ Product Service ← NEXT
+2️⃣ Add Kafka consumer in Product Service (optional)
+3️⃣ Add JWT Authentication
+4️⃣ Add Angular frontend
+5️⃣ Add Order Service
+6️⃣ Add Payment flow
+
+
+🚀 WHAT SHOULD WE DO NEXT?
+
+You’re now at a big milestone. Choose ONE:
+
+👉 Add role-based authorization (ADMIN vs USER)
+👉 Secure POST /products (only ADMIN can add)
+👉 Move JWT secret to Config Server
+👉 Add Order Service (checkout flow)
+👉 Connect Angular frontend with JWT
+
+
+POST http://localhost:8083/products
+
+{
+  "name": "Laptop",
+  "description": "Gaming laptop",
+  "price": 75000
+}
+
+
+
+🧩 2️⃣ Microservices We Will Build
+
+| Service                      | Responsibility                      |
+| ---------------------------- | ----------------------------------- |
+| **API Gateway**              | Entry point (routing + auth filter) |
+| **Auth Service**             | JWT authentication                  |
+| **User Service**             | User management                     |
+| **Product Service**          | Product catalog                     |
+| **Cart Service**             | Shopping cart                       |
+| **Order Service**            | Order processing                    |
+| **Inventory Service**        | Stock management                    |
+| **Notification Service**     | Email / events (Kafka consumer)     |
+| **Eureka Server** (optional) | Service discovery                   |
+
+
+
+
+📦 Microservices We Will Build
+
+Discovery Server (Eureka)
+
+Config Server
+
+API Gateway
+
+User Service (JWT Authentication)
+
+Product Service
+
+Order Service
+
+Payment Service (Kafka consumer)
+
+Notification Service (Kafka consumer)
+
+
+
+
+
+🏗️ Correct Build Order (Industry Standard)
+
+1️⃣ Discovery Server (Eureka)
+2️⃣ Config Server
+3️⃣ Microservices (User, Product, Order, etc.)
+4️⃣ API Gateway (Entry Point)
+5️⃣ Security (JWT filter at Gateway)
+6️⃣ Kafka
+7️⃣ Docker
+
+
+              Angular Frontend
+                      ↓
+                API Gateway (8080)
+                      ↓
+         --------------------------------
+         |                              |
+   Discovery Server (8761)        Config Server (8888)
+         |
+  ----------------------------------------------
+  |           |             |                |
+User      Product       Order           Payment
+Service    Service       Service         Service
+
+
+
+
+Spring Cloud Config Client
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+
+
+
+Spring Cloud Config server
+<dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-config-server</artifactId>
+    </dependency>
+
+
+
+net start MYSQL80
+
+
+
+
+Run Order (VERY IMPORTANT)
+Start services in this order:
+1. discovery-server
+2. config-server
+3. user-service
+4. api-gateway
+5. product-service
+6. order-service
+
+
+
+bin\windows\kafka-server-start.bat config\kraft\server.properties
+
+bin\windows\kafka-storage.bat format -t uBY5_6JPSiKC4NRGp33Kcw -c config\server.properties --standalone
+
+
+
+
+2️⃣ Add Global Exception Handling
+4️⃣ Add Kafka event security
+3️⃣ Run everything in one command
+✅ Kafka Security
+
+
+
+
+
+✅ Basic Saga (Choreography Pattern) => Convert to Saga Orchestration => State Machine
+
+
+Security Improvements
+❌ Token revocation
+❌ Redis refresh tokens
+❌ Multi-device login management
+
+
+Resilience Improvements
+❌ Rate limiter
+❌ Bulkhead => Add Bulkhead (limit concurrent calls)
+❌ Time limiter
+
+
+Observability Stack
+❌ Spring Boot Actuator endpoints
+❌ Prometheus metrics
+❌ Zipkin tracing / Zipkin distributed tracing
+❌ Kafka consumer lag monitoring
+3️⃣ Add Monitoring Dashboard (Actuator)
+4️⃣ Actuator monitoring dashboard
+
+
+Saga Improvements
+❌ Inventory restore on failure / Add Inventory Restore Listener
+❌ Idempotent consumer / Add idempotency protection
+❌ Saga state machine
+❌ Saga orchestration (central coordinator)
+
+
+Deployment
+❌ Dockerfile for services / Dockerize entire architecture / Convert to Docker Compose full system
+❌ Docker Compose
+❌ secured deployment
+
+
+
+
+
+At this point, your system already has:
+✅ Eureka Discovery Server
+✅ Config Server
+✅ API Gateway (Netty)
+✅ User Service
+✅ Product Service
+✅ Order Service
+✅ Inventory Service
+✅ Payment Service
+✅ JWT Authentication
+✅ Role-Based Authorization
+✅ Method-Level Security
+✅ MySQL connected
+✅ Refresh Token System
+✅ Add Product Service
+✅ Add Kafka communication
+✅ Kafka Producer
+✅ Kafka Consumer
+✅ Event-driven communication
+
+✅ Inventory Service
+✅ Basic Saga (Choreography Pattern) => Choreography Pattern is good now => for new use => Convert to Saga Orchestration => State Machine
+✅ Outbox Pattern
+✅ Add Retry + Dead Letter Topic
+✅ Add Payment retry + DLT
+✅ Retry with backoff
+✅ Automatic retry topics
+✅ Dead Letter Topic (DLT)
+✅ Convert to Saga Pattern
+✅ Convert this to proper Saga State Machine
+✅ Convert to Orchestration Saga
+✅ Resilience4j => ✅ Circuit breaker => ✅ Retry
+✅ outbox pattern
+
+
+Spring Cloud OpenFeign
+Spring Cloud Eureka Client
+Spring State Machine (optional but recommended)
+
+
+
+com.ecommerce.paymentservice
+
+
+So your architecture looks like:
+
+
+8080
+8081
+8082
+8083
+8084
+8085
+8086
+8761
+8888
+9092
+
+
+🟥 What Is Missing for a Complete Saga?
+
+
+server.port=8086
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I have built a Spring Boot microservices e-commerce system with:
+
+Architecture:
+- Eureka Discovery Server
+- Config Server
+- API Gateway (Spring Cloud Gateway - Netty)
+- User Service (JWT auth + roles)
+- Product Service
+- Order Service
+- Inventory Service
+- Payment Service
+- MySQL
+- Kafka (event-driven communication)
+
+Implemented so far:
+
+Security:
+- JWT Authentication
+- Role-based authorization
+- Method-level security
+- Refresh token system
+
+Microservices Infra:
+- Service discovery using Eureka
+- Centralized config using Config Server
+- API Gateway routing
+
+Kafka:
+- Producer + Consumer working
+- Event-driven communication working
+- Retry with backoff
+- Automatic retry topics
+- Dead Letter Topic (DLT)
+- Fixed deserialization issues
+
+Saga:
+- Basic Saga Pattern (Choreography)
+- Order → Inventory → Payment → Order finalize
+- Compensation logic (inventory restore event on payment failure)
+- Inventory Service has Retry + DLT configured
+
+Current system works end-to-end.
+
+Now I want to move to production-level architecture.
+
+Please help me design a structured roadmap and implement step-by-step:
+
+1) Convert current basic Saga to proper state machine
+2) Add idempotency protection
+3) Implement Outbox pattern
+4) Convert to Orchestration Saga model
+5) Add Resilience:
+   - Circuit Breaker
+   - Retry
+   - Bulkhead
+   - Rate Limiter
+   - TimeLimiter
+6) Add Monitoring:
+   - Spring Boot Actuator
+   - Prometheus
+   - Zipkin
+   - Kafka consumer lag monitoring
+7) Add Kafka event security
+8) Implement Redis-based refresh tokens
+9) Multi-device login management
+10) Token revocation system
+11) Dockerize all services
+12) Create full docker-compose with secured deployment
+
+Guide me in a clean production-grade sequence.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
