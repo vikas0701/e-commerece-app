@@ -16,20 +16,9 @@ public class PaymentController {
     }
 
     @PostMapping("/process")
-//    public String processPayment(@RequestParam Long orderId) {
-//    public String processPayment(@RequestParam PaymentEvent event) {
-    public String processPayment(@RequestBody PaymentEvent event) {
+    public String listenPaymentEvent(@RequestBody PaymentEvent event) {
 
-//        boolean success = paymentService.processPayment(orderId);
-//    	boolean success = paymentService.processPayment(event);
-//
-//        if(success) {
-//            return "PAYMENT_SUCCESS";
-//        }
-//
-//        throw new RuntimeException("Payment failed");
-    	
-    	paymentService.processPayment(event);
+    	paymentService.listenPaymentEvent(event);
     	
     	 return "PAYMENT_REQUEST_RECEIVED";
     }

@@ -319,51 +319,45 @@ bin\windows\kafka-storage.bat format -t uBY5_6JPSiKC4NRGp33Kcw -c config\server.
 
 
 
-2️⃣ Add Global Exception Handling
-4️⃣ Add Kafka event security
-3️⃣ Run everything in one command
-✅ Kafka Security
 
 
 
 
 
-✅ Basic Saga (Choreography Pattern) => Convert to Saga Orchestration => State Machine
 
-
-Security Improvements
-❌ Token revocation
-❌ Redis refresh tokens
-❌ Multi-device login management
-
-
-Resilience Improvements
-❌ Rate limiter
-❌ Bulkhead => Add Bulkhead (limit concurrent calls)
+2️⃣ Resilience Improvements
 ❌ Time limiter
 
 
-Observability Stack
+3️⃣ Observability Stack
 ❌ Spring Boot Actuator endpoints
 ❌ Prometheus metrics
 ❌ Zipkin tracing / Zipkin distributed tracing
 ❌ Kafka consumer lag monitoring
-3️⃣ Add Monitoring Dashboard (Actuator)
-4️⃣ Actuator monitoring dashboard
+❌ Add Monitoring Dashboard (Actuator)
+❌ Actuator monitoring dashboard
 
 
-Saga Improvements
-❌ Inventory restore on failure / Add Inventory Restore Listener
-❌ Idempotent consumer / Add idempotency protection
-❌ Saga state machine
-❌ Saga orchestration (central coordinator)
+4️⃣ ❌ Add Global Exception Handling
+5️⃣ ❌ Add Kafka event security
 
 
 Deployment
-❌ Dockerfile for services / Dockerize entire architecture / Convert to Docker Compose full system
-❌ Docker Compose
+6️⃣ ❌ Dockerfile for services / Dockerize entire architecture / Convert to Docker Compose full system
+6️⃣ ❌ Docker Compose
 ❌ secured deployment
 
+
+7️⃣ ❌ Run everything in one command
+
+
+
+
+
+Saga Improvements
+❌ Idempotent consumer / Add idempotency protection
+❌ Saga state machine
+❌ Saga orchestration (central coordinator)
 
 
 
@@ -377,19 +371,17 @@ At this point, your system already has:
 ✅ Order Service
 ✅ Inventory Service
 ✅ Payment Service
+✅ ecommerce-parent => module
 ✅ JWT Authentication
 ✅ Role-Based Authorization
 ✅ Method-Level Security
 ✅ MySQL connected
 ✅ Refresh Token System
-✅ Add Product Service
 ✅ Add Kafka communication
 ✅ Kafka Producer
 ✅ Kafka Consumer
 ✅ Event-driven communication
-
-✅ Inventory Service
-✅ Basic Saga (Choreography Pattern) => Choreography Pattern is good now => for new use => Convert to Saga Orchestration => State Machine
+✅ Basic Saga (Choreography Pattern) 
 ✅ Outbox Pattern
 ✅ Add Retry + Dead Letter Topic
 ✅ Add Payment retry + DLT
@@ -401,19 +393,22 @@ At this point, your system already has:
 ✅ Convert to Orchestration Saga
 ✅ Resilience4j => ✅ Circuit breaker => ✅ Retry
 ✅ outbox pattern
+✅ Inventory restore on failure
+✅ Redis refresh tokens with Refresh Token Rotation
+✅ Rate limiter
+✅ Bulkhead => Add Bulkhead (limit concurrent calls)
 
 
-Spring Cloud OpenFeign
-Spring Cloud Eureka Client
-Spring State Machine (optional but recommended)
+
 
 
 
 com.ecommerce.paymentservice
 
 
-So your architecture looks like:
 
+
+6379
 
 8080
 8081
@@ -429,7 +424,7 @@ So your architecture looks like:
 
 🟥 What Is Missing for a Complete Saga?
 
-
+=> Choreography Pattern is good now => for new use => Convert to Saga Orchestration => State Machine
 server.port=8086
 
 

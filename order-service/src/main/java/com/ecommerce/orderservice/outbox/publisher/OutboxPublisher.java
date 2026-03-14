@@ -29,7 +29,7 @@ public class OutboxPublisher {
 		this.objectMapper = objectMapper;
 	}
 
-	@Scheduled(fixedDelay = 30000)
+	@Scheduled(fixedDelay = 10000)
 	@Transactional
 	public void publishOutboxEvents() {
 
@@ -74,7 +74,8 @@ public class OutboxPublisher {
 	                default:
 	                    throw new IllegalArgumentException("Unknown event type");
 	            }
-	            orderKafkaTemplate.send(topic, eventObject);
+//	            orderKafkaTemplate.send(topic, eventObject);
+	            orderKafkaTemplate.send(topic, String.valueOf(event.getAggregateId()), eventObject);
 
 	            event.setStatus("SENT");
 

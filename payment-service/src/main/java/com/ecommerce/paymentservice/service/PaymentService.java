@@ -1,41 +1,36 @@
 package com.ecommerce.paymentservice.service;
 
-import java.util.Random;
-
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.common.events.PaymentEvent;
-import com.ecommerce.common.events.PaymentResponse;
+
 
 @Service
 public class PaymentService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public PaymentService(KafkaTemplate<String, Object> kafkaTemplate) {
+    private final PaymentProcessorService processor;
+    
+    public PaymentService(KafkaTemplate<String, Object> kafkaTemplate, PaymentProcessorService processor) {
         this.kafkaTemplate = kafkaTemplate;
+        this.processor = processor;
     }
 
-    @KafkaListener(topics = "payment-topic", groupId = "payment-group")
-    public void processPayment(PaymentEvent event) {
-//    public boolean processPayment(PaymentEvent event) {
+    @KafkaListener(topics = "payment-topic", groupId = "payment-group", concurrency = "4")
+    public void listenPaymentEvent(PaymentEvent event) {
 
-        System.out.println("Processing payment for order: " + event.getOrderId());
+        System.out.println(
+                "THREAD: " + Thread.currentThread().getName() +
+                " Processing payment for order: " + event.getOrderId()
+            );
 
-        boolean paymentSuccess = new Random().nextBoolean();
-
+        processor.processPayment(event);   // call protected method
         
-        if (paymentSuccess) {
-
-            kafkaTemplate.send("payment-response-topic",new PaymentResponse(event.getOrderId(), true));
-
-        } else {
-
-            kafkaTemplate.send("payment-response-topic",new PaymentResponse(event.getOrderId(), false));
-        }
-        
-//        return paymentSuccess;
     }
+    
+    
 }
+
