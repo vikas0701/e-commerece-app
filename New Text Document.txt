@@ -329,22 +329,13 @@ bin\windows\kafka-storage.bat format -t uBY5_6JPSiKC4NRGp33Kcw -c config\server.
 ❌ Time limiter => will add after words
 ❌ Kafka event security
 
- 
 
-Deployment
-6️⃣ ❌ Dockerfile for services / Dockerize entire architecture / Convert to Docker Compose full system
-6️⃣ ❌ Docker Compose
 ❌ secured deployment
 
 
-7️⃣ ❌ Run everything in one command
-
-
-@SpringBootTest(classes = OrderServiceApplication.class)
 
 
 Saga Improvements
-❌ Idempotent consumer / Add idempotency protection
 ❌ Saga state machine
 ❌ Saga orchestration (central coordinator)
 
@@ -394,6 +385,9 @@ At this point, your system already has:
 ✅ Global Exception Handling
 ✅ Data Isolation / Independent Schema / db for each service
 ✅ Idempotent Kafka consumers
+✅ Dockerfile for all services
+✅ One command startup Dockerfile
+✅ 
 
 
 
