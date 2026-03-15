@@ -326,16 +326,7 @@ bin\windows\kafka-storage.bat format -t uBY5_6JPSiKC4NRGp33Kcw -c config\server.
 
 
 2️⃣ Resilience Improvements
-❌ Time limiter
-
-
-3️⃣ Observability Stack
-❌ Spring Boot Actuator endpoints
-❌ Prometheus metrics
-❌ Zipkin tracing / Zipkin distributed tracing
-❌ Kafka consumer lag monitoring
-❌ Add Monitoring Dashboard (Actuator)
-❌ Actuator monitoring dashboard
+❌ Time limiter => will add after words
 
 
 4️⃣ ❌ Add Global Exception Handling
@@ -397,10 +388,11 @@ At this point, your system already has:
 ✅ Redis refresh tokens with Refresh Token Rotation
 ✅ Rate limiter
 ✅ Bulkhead => Add Bulkhead (limit concurrent calls)
-
-
-
-
+✅ Spring Boot Actuator endpoints
+✅ Prometheus metrics
+✅ Zipkin Distributed Tracing 
+✅ Grafana Dashboard
+✅ Kafka consumer lag monitoring
 
 
 com.ecommerce.paymentservice

@@ -9,18 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableMethodSecurity   // Enables @PreAuthorize
 public class SecurityConfig {
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//
-//        http
-//            .csrf(csrf -> csrf.disable())
-//            .authorizeHttpRequests(auth -> auth
-//                .anyRequest().permitAll()
-//            );
-//
-//        return http.build();
-//    }
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -31,6 +19,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter,
