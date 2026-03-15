@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+
+import com.ecommerce.common.exception.BusinessException;
+import com.ecommerce.common.exception.ErrorCode;
 import com.ecommerce.userservice.dto.LoginResponse;
 import com.ecommerce.userservice.dto.UserRequest;
 import com.ecommerce.userservice.dto.UserResponse;
@@ -123,9 +126,12 @@ public class UserServiceImpl implements UserService{
 
 		String userId = refreshTokenRedisService.getUserId(refreshToken);
 
-	    if (userId == null) {
-	        throw new RuntimeException("Invalid refresh token");
-	    }
+		if (userId == null) {
+		    throw new BusinessException(
+		            ErrorCode.INVALID_TOKEN,
+		            "Invalid refresh token"
+		    );
+		}
 	    
 	    // delete old refresh token
 	    refreshTokenRedisService.deleteToken(refreshToken);

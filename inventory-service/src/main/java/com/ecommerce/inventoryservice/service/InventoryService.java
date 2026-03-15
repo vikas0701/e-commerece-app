@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.ecommerce.common.events.InventoryEvent;
 import com.ecommerce.common.events.InventoryRestoreEvent;
 import com.ecommerce.common.events.OrderEvent;
+import com.ecommerce.common.exception.BusinessException;
+import com.ecommerce.common.exception.ErrorCode;
 //import com.ecommerce.inventoryservice.dto.OrderEvent;
 //import com.ecommerce.inventoryservice.dto.InventoryEvent;
 import com.ecommerce.inventoryservice.entity.Inventory;
@@ -42,7 +44,13 @@ public class InventoryService {
 				.orElse(null);
 		System.out.println("inventory " + inventory);
 		if (inventory == null) {
-			throw new RuntimeException("Inventory not found for product " + event.getProductId());
+//			throw new RuntimeException("Inventory not found for product " + event.getProductId());
+			if (inventory == null) {
+			    throw new BusinessException(
+			            ErrorCode.INVENTORY_NOT_AVAILABLE,
+			            "Inventory not found for product " + event.getProductId()
+			    );
+			}
 		}
 
 		// 🟢 Stock available

@@ -14,6 +14,8 @@ import com.ecommerce.common.events.InventoryRestoreEvent;
 import com.ecommerce.common.events.OrderEvent;
 import com.ecommerce.common.events.PaymentEvent;
 import com.ecommerce.common.events.PaymentResponse;
+import com.ecommerce.common.exception.BusinessException;
+import com.ecommerce.common.exception.ErrorCode;
 import com.ecommerce.orderservice.client.ProductClient;
 //import com.ecommerce.orderservice.dto.InventoryEvent;
 //import com.ecommerce.orderservice.dto.InventoryRestoreEvent;
@@ -74,7 +76,11 @@ public class OrderService {
 	        System.out.println("FAILED Order saved with ID: " + failedOrder.getId());
 	        System.out.println("=== PLACE ORDER END ===");
 
-	        return failedOrder;
+//	        return failedOrder;
+	        throw new BusinessException(
+	                ErrorCode.PRODUCT_NOT_FOUND,
+	                "Product with id " + productId + " not found"
+	        );
 	    }
 
 	    Order order = new Order(userId, productId, quantity, 100.0, OrderStatus.CREATED);
@@ -125,7 +131,11 @@ public class OrderService {
 		Order order = orderRepository.findById(event.getOrderId()).orElse(null);
 		if (order == null) {
 	        System.out.println("Order not found for inventory event.");
-	        return;
+//	        return;
+	        throw new BusinessException(
+	                ErrorCode.ORDER_NOT_FOUND,
+	                "Order not found for inventory event: " + event.getOrderId()
+	        );
 	    }
 
 		if ("INVENTORY_CONFIRMED".equals(event.getStatus())) {
@@ -174,7 +184,13 @@ public class OrderService {
 
 		Order order = orderRepository.findById(response.getOrderId()).orElse(null);
 
-		if (order == null) return;
+//		if (order == null) return;
+		if (order == null) {
+		    throw new BusinessException(
+		            ErrorCode.ORDER_NOT_FOUND,
+		            "Order not found for inventory event: " + response.getOrderId()
+		    );
+		}
 
 		if (response.isSuccess()) {
 

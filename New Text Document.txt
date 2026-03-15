@@ -329,9 +329,10 @@ bin\windows\kafka-storage.bat format -t uBY5_6JPSiKC4NRGp33Kcw -c config\server.
 ❌ Time limiter => will add after words
 
 
-4️⃣ ❌ Add Global Exception Handling
-5️⃣ ❌ Add Kafka event security
+❌ Kafka event security
 
+Idempotent Kafka consumers (very important in real systems)
+Exactly-once processing using Kafka transactions
 
 Deployment
 6️⃣ ❌ Dockerfile for services / Dockerize entire architecture / Convert to Docker Compose full system
@@ -342,7 +343,7 @@ Deployment
 7️⃣ ❌ Run everything in one command
 
 
-
+@SpringBootTest(classes = OrderServiceApplication.class)
 
 
 Saga Improvements
@@ -393,6 +394,8 @@ At this point, your system already has:
 ✅ Zipkin Distributed Tracing 
 ✅ Grafana Dashboard
 ✅ Kafka consumer lag monitoring
+✅ Global Exception Handling
+
 
 
 com.ecommerce.paymentservice
