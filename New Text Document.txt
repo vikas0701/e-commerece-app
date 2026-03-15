@@ -327,12 +327,9 @@ bin\windows\kafka-storage.bat format -t uBY5_6JPSiKC4NRGp33Kcw -c config\server.
 
 2️⃣ Resilience Improvements
 ❌ Time limiter => will add after words
-
-
 ❌ Kafka event security
 
-Idempotent Kafka consumers (very important in real systems)
-Exactly-once processing using Kafka transactions
+ 
 
 Deployment
 6️⃣ ❌ Dockerfile for services / Dockerize entire architecture / Convert to Docker Compose full system
@@ -395,12 +392,20 @@ At this point, your system already has:
 ✅ Grafana Dashboard
 ✅ Kafka consumer lag monitoring
 ✅ Global Exception Handling
+✅ Data Isolation / Independent Schema / db for each service
+✅ Idempotent Kafka consumers
+
 
 
 
 com.ecommerce.paymentservice
 
-
+KafkaTemplate
+in 
+Order Service
+Payment Service
+Inventory Service
+product service
 
 
 6379

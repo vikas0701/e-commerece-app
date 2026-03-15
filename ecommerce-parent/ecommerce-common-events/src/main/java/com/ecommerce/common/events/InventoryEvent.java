@@ -1,16 +1,20 @@
 package com.ecommerce.common.events;
 
+import java.util.UUID;
+
 public class InventoryEvent {
 
-  private Long orderId;
-  private String status;
+	private UUID eventId;
+	private Long orderId;
+	private String status;
 
-  public InventoryEvent() {}
+	public InventoryEvent() {}
 
-  public InventoryEvent(Long orderId, String status) {
-      this.orderId = orderId;
-      this.status = status;
-  }
+	public InventoryEvent(UUID eventId, Long orderId, String status) {
+		this.eventId = eventId;
+		this.orderId = orderId;
+		this.status = status;
+	}
 
 	public Long getOrderId() {
 		return orderId;
@@ -28,6 +32,14 @@ public class InventoryEvent {
 		this.status = status;
 	}
 
-  
+	public UUID getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(UUID eventId) {
+		this.eventId = eventId;
+	}
+
+
 }
 

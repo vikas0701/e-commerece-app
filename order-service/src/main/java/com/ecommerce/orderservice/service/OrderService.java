@@ -24,9 +24,11 @@ import com.ecommerce.orderservice.client.ProductClient;
 //import com.ecommerce.orderservice.dto.PaymentResponse;
 import com.ecommerce.orderservice.entity.Order;
 import com.ecommerce.orderservice.entity.OrderStatus;
+import com.ecommerce.orderservice.entity.ProcessedEvent;
 import com.ecommerce.orderservice.outbox.entity.OutboxEvent;
 import com.ecommerce.orderservice.repository.OrderRepository;
 import com.ecommerce.orderservice.repository.OutboxRepository;
+import com.ecommerce.orderservice.repository.ProcessedEventRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -46,16 +48,19 @@ public class OrderService {
 
 	private final OutboxRepository outboxRepository;
 	private final ObjectMapper objectMapper;
+	private final ProcessedEventRepository processedEventRepository;
 
 	public OrderService(OrderRepository orderRepository,
 			ProductClient productClient,
 			OutboxRepository outboxRepository,
-			ObjectMapper objectMapper) {
+			ObjectMapper objectMapper,
+			ProcessedEventRepository processedEventRepository) {
 
 		this.orderRepository = orderRepository;
 		this.productClient = productClient;
 		this.outboxRepository = outboxRepository;
 		this.objectMapper = objectMapper;
+		this.processedEventRepository = processedEventRepository;
 	}
 
 	@Transactional
@@ -124,6 +129,13 @@ public class OrderService {
 	@KafkaListener(topics = "inventory-topic", groupId = "order-group")
 	public void updateOrderAfterInventory(InventoryEvent event) {
 
+		String eventId = event.getEventId().toString();
+
+		if(processedEventRepository.existsById(eventId)) {
+			System.out.println("Duplicate event ignored: " + eventId);
+		    return;
+		}
+		
 		System.out.println("=== INVENTORY EVENT RECEIVED ===");
 	    System.out.println("OrderId: " + event.getOrderId());
 	    System.out.println("Status: " + event.getStatus());
@@ -147,6 +159,7 @@ public class OrderService {
 
 			try {
 			    PaymentEvent paymentEvent = new PaymentEvent(
+			    		UUID.randomUUID(),
 			            order.getId(),
 			            order.getUserId(),
 			            order.getTotalPrice()
@@ -175,6 +188,13 @@ public class OrderService {
 			System.out.println("Order CANCELLED due to inventory failure");
 			orderRepository.save(order);
 		}
+		
+		try {
+		    processedEventRepository.save(new ProcessedEvent(eventId));
+		} catch (Exception e) {
+		    System.out.println("Duplicate event ignored: " + eventId);
+		    return;
+		}
 	}
 
 	@KafkaListener(topics = "payment-response-topic", groupId = "order-group")
@@ -186,6 +206,7 @@ public class OrderService {
 
 //		if (order == null) return;
 		if (order == null) {
+			System.out.println("Order not found for inventory event.");
 		    throw new BusinessException(
 		            ErrorCode.ORDER_NOT_FOUND,
 		            "Order not found for inventory event: " + response.getOrderId()

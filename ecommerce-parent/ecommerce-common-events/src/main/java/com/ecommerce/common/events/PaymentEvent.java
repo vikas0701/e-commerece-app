@@ -1,17 +1,29 @@
 package com.ecommerce.common.events;
 
+import java.util.UUID;
+
 public class PaymentEvent {
 
+  private UUID eventId;
   private Long orderId;
   private Long userId;
   private Double amount;
 
   public PaymentEvent() {}
 
-  public PaymentEvent(Long orderId, Long userId, Double amount) {
+  public PaymentEvent(UUID eventId, Long orderId, Long userId, Double amount) {
+      this.eventId = eventId;
       this.orderId = orderId;
       this.userId = userId;
       this.amount = amount;
+  }
+
+  public UUID getEventId() {
+      return eventId;
+  }
+
+  public void setEventId(UUID eventId) {
+      this.eventId = eventId;
   }
 
   public Long getOrderId() { return orderId; }

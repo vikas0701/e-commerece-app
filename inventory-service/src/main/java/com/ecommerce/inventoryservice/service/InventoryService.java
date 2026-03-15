@@ -16,18 +16,31 @@ import com.ecommerce.common.exception.ErrorCode;
 //import com.ecommerce.inventoryservice.dto.OrderEvent;
 //import com.ecommerce.inventoryservice.dto.InventoryEvent;
 import com.ecommerce.inventoryservice.entity.Inventory;
+import com.ecommerce.inventoryservice.entity.ProcessedEvent;
 import com.ecommerce.inventoryservice.repository.InventoryRepository;
+import com.ecommerce.inventoryservice.repository.ProcessedEventRepository;
 
 @Service
 public class InventoryService {
 
 	private final InventoryRepository inventoryRepository;
 	private final KafkaTemplate<String, Object> kafkaTemplate;
+	private final ProcessedEventRepository processedEventRepository;
 
-	public InventoryService(InventoryRepository inventoryRepository,
-			KafkaTemplate<String, Object> kafkaTemplate) {
-		this.inventoryRepository = inventoryRepository;
-		this.kafkaTemplate = kafkaTemplate;
+
+//	public InventoryService(InventoryRepository inventoryRepository,
+//			KafkaTemplate<String, Object> kafkaTemplate) {
+//		this.inventoryRepository = inventoryRepository;
+//		this.kafkaTemplate = kafkaTemplate;
+//	}
+	public InventoryService(
+	        InventoryRepository inventoryRepository,
+	        KafkaTemplate<String, Object> kafkaTemplate,
+	        ProcessedEventRepository processedEventRepository) {
+
+	    this.inventoryRepository = inventoryRepository;
+	    this.kafkaTemplate = kafkaTemplate;
+	    this.processedEventRepository = processedEventRepository;
 	}
 
 	@RetryableTopic(
@@ -38,6 +51,14 @@ public class InventoryService {
 	@KafkaListener(topics = "order-topic", groupId = "inventory-group-v4")
 	public void handleOrder(OrderEvent event) {
 
+		String eventId = event.getEventId().toString();
+
+	    // 1️⃣ Check duplicate
+	    if (processedEventRepository.existsById(eventId)) {
+	        System.out.println("Duplicate event ignored: " + eventId);
+	        return;
+	    }
+	    
 		System.out.println("order-topic event received: " + event);
 		
 		Inventory inventory = inventoryRepository.findById(event.getProductId())
@@ -62,14 +83,23 @@ public class InventoryService {
 			System.out.println("Inventory published INVENTORY_CONFIRMED for order: " + event.getOrderId());
 
 			kafkaTemplate.send("inventory-topic",
-					new InventoryEvent(event.getOrderId(), "INVENTORY_CONFIRMED"));
+					new InventoryEvent(java.util.UUID.randomUUID(), event.getOrderId(), "INVENTORY_CONFIRMED"));
 
 		} else {
 
 			// 🟡 Business failure (NOT system failure)
 			kafkaTemplate.send("inventory-topic",
-					new InventoryEvent(event.getOrderId(), "CANCELLED"));
+					new InventoryEvent(java.util.UUID.randomUUID(), event.getOrderId(), "CANCELLED"));
 		}
+		
+		// 2️⃣ Mark event processed ONLY AFTER SUCCESS
+	    try {
+	        processedEventRepository.save(new ProcessedEvent(eventId));
+	    } catch (Exception e) {
+	        System.out.println("Duplicate event ignored: " + eventId);
+	        return;
+	    }
+	    
 	}
 
 
